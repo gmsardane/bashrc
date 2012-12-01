@@ -2,6 +2,7 @@
 
 set -o noclobber # prevent redirect from overwriting files (use >| to over-ride)
 set -o interactive-comments
+set -o vi
 
 # Shell options check 'man bash' for descriptions
 shopt -s cdspell
