@@ -26,7 +26,9 @@ git_prompt() {
     echo -n "Git Branch: ${branch}"
   else
     echo -n ""
-    fi
+  fi
+
+  unset branch stat
 }
 
 ruby_prompt() {
@@ -36,6 +38,8 @@ ruby_prompt() {
   else
     echo -n "Ruby Version: ${version% (set*}"
   fi
+
+  unset version
 }
 
 prompt_command() {
@@ -52,16 +56,21 @@ prompt_command() {
   fillsize=$(expr ${TERMWIDTH} - ${#temp})
 
   if [[ $fillsize -ge 0 ]] ; then
-  fill="-------------------------------------------------------------------------------------------------------------------------------------------"
+  fill="-----------------------------------------------------------------------"
+  fill="${fill}----------------------------------------------------------------"
+  fill="${fill}----------------------------------------------------------------"
+  fill="${fill}----------------------------------------------------------------"
   fill="${fill:0:${fillsize}}"
   dir="${PWD}"
   fi
 
   if [[ $fillsize -lt 0 ]] ; then
-  fill=""
-  let cut=3-${fillsize}
-  dir="...${PWD:${cut}}"
+    fill=""
+    let cut=3-${fillsize}
+    dir="...${PWD:${cut}}"
   fi
+
+  unset fillsize cut temp TERMWIDTH pwd_git hname uname rver gbranch
 }
 
 PROMPT_COMMAND=prompt_command
@@ -69,7 +78,7 @@ PROMPT_COMMAND=prompt_command
 PS1="\[${NC}\]-- \[${WHITE}\]\$(date)\[${NC}\] - "
 PS1="${PS1}\[${LIGHTRED}\]\$(ruby_prompt)\[${NC}\] - "
 PS1="${PS1}\[${YELLOW}\]\$(git_prompt)\[${NC}\] "
-PS1="${PS1}---\${fill}- \[${LIGHTRED}\]\$dir \[${NC}\]--\n"
-PS1="${PS1}-- \[${LIGHTCYAN}\]\u\[${NC}\]@\[${BROWN}\]\h \[${NC}\]\$ "
+PS1="${PS1}---\${fill}- \[${LIGHTBLUE}\]\$dir \[${NC}\]--\n"
+PS1="${PS1}-- \[${LIGHTCYAN}\]\u\[${NC}\]@\[${BROWN}\]\h \[${NC}\] \$ "
 
 export PS1

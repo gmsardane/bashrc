@@ -15,6 +15,8 @@ get_nm() {
 	echo "Bad netmask" 1>&2;
     fi
     echo $netmask
+
+    unset nm netmask
 }
 
 pass_gen() {
@@ -25,15 +27,21 @@ pass_gen() {
     fi
 
     head -c 500 /dev/urandom |tr -dc \!-z |head -c ${len}; echo
+
+    unset len
 }
 
 git_branch() {
     ref=$(git symbolic-ref HEAD 2> /dev/null) || return
     echo "${ref#refs/heads/}"
+
+    unset ref
 }
 
 rbenv_version() {
-  ver=$(rbenv version) ; echo ${ver%(set*}
+    ver=$(rbenv version) ; echo ${ver%(set*}
+
+    unset ver
 }
 
 welcome() {
