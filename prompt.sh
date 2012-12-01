@@ -73,7 +73,7 @@ prompt_command() {
   unset fillsize cut temp TERMWIDTH pwd_git hname uname rver gbranch
 }
 
-PROMPT_COMMAND=prompt_command
+PROMPT_COMMAND="prompt_command ; ${PROMPT_COMMAND}"
 
 PS1="\[${NC}\]-- \[${WHITE}\]\$(date)\[${NC}\] - "
 PS1="${PS1}\[${LIGHTRED}\]\$(ruby_prompt)\[${NC}\] - "

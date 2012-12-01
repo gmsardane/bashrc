@@ -10,6 +10,5 @@ shopt -s cmdhist
 shopt -s extglob
 shopt -s huponexit
 shopt -u mailwarn
-shopt -s histappend
 
 umask 022
