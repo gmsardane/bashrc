@@ -45,16 +45,20 @@ rbenv_version() {
 }
 
 welcome() {
-case $- in
-*i*)    # interactive shell
-	echo -e "${WHITE}Welcome to ${LIGHTGREEN}$(hostname)${WHITE}:${NC}"
-	echo -e "    Today's date is "${YELLOW}"$(date +"%A %B %d, %Y")"${NC}
-	echo -e "    The current time is "${YELLOW}"$(date +"%r")"${NC}
-	echo ""
-	echo -e ${LIGHTPURPLE}$(fortune -a)${NC}
-	echo ""
-;;
-*)      # non-interactive shell
-;;
-esac
+    which fortune > /dev/null
+    fortune_check=$?
+    case $- in
+    *i*)    # interactive shell
+	    echo -e "${WHITE}Welcome to ${LIGHTGREEN}$(hostname)${WHITE}:${NC}"
+	    echo -e "    Today's date is "${YELLOW}"$(date +"%A %B %d, %Y")"${NC}
+	    echo -e "    The current time is "${YELLOW}"$(date +"%r")"${NC}
+	    echo ""
+        if [[ $fortune_check -eq 0 ]] ; then
+            echo -e ${LIGHTPURPLE}$(fortune -a)${NC}
+            echo ""
+        fi
+    ;;
+    *)      # non-interactive shell
+    ;;
+    esac
 }
