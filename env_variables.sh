@@ -1,7 +1,7 @@
 #### Environmental variables ####
 
 export PATH="/usr/local/bin:${PATH}"
-export EDITOR="subl --wait"
+export EDITOR="mvim -f"
 export CLICOLOR=1
 export JAVA_HOME="/System/Library/Frameworks/JavaVM.framework/Home/"
 
