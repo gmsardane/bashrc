@@ -19,6 +19,20 @@ get_nm() {
     unset nm netmask
 }
 
+fuck_off(){
+ style_two_names=( linus you off donut king )
+ style_one_name=( this that everything everyone pink )
+ i=$(( $RANDOM % 5 ))
+
+ if [[ ! -z ${2} ]] ; then
+   curl http://foaas.herokuapp.com/${style_two_names[$i]}/${1}/${2}
+ else
+   curl http://foaas.herokuapp.com/${style_one_name[$i]}/${1}
+ fi
+
+ echo ""
+}
+
 pass_gen() {
     if [[ $# == 0 ]]; then
       len=12
@@ -26,7 +40,7 @@ pass_gen() {
       len=${1}
     fi
 
-    head -c 500 /dev/urandom |tr -dc \!-z |head -c ${len}; echo
+    LC_CTYPE=C head -c 500 /dev/urandom |tr -dc \!-z |head -c ${len}; echo
 
     unset len
 }
