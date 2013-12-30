@@ -11,4 +11,4 @@ fi
 
 unset config_path stat
 
-source /usr/share/git-core/git-completion.bash
+source /usr/local/etc/bash_completion.d/git-completion.bash

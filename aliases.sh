@@ -6,3 +6,6 @@ alias updatedb='sudo /usr/libexec/locate.updatedb'
 alias ls='ls -G'
 alias grep='grep --color=auto'
 alias chef-gem='sudo /opt/chef/embedded/bin/gem'
+function dash {
+    open "dash://${1}"
+}
