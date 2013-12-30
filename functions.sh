@@ -32,6 +32,18 @@ _password_generator() {
 }
 alias pass_gen='LC_CTYPE=C _password_generator'
 
+knife_config() {
+    if [ -d $HOME/.chef_configs/$1 ] ; then
+        if [ -L $HOME/.chef ] ; then
+            rm $HOME/.chef
+        fi
+
+        ln -s ${HOME}/.chef_configs/$1 ${HOME}/.chef
+    else
+        echo "Directory not found: ${HOME}/.chef_configs/$1" >&2
+    fi
+}
+
 git_branch() {
     ref=$(git symbolic-ref HEAD 2> /dev/null) || return
     echo "${ref#refs/heads/}"

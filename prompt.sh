@@ -42,16 +42,32 @@ ruby_prompt() {
   unset version
 }
 
+chef_prompt() {
+  if [ -f ./.chef/knife.rb ] ; then
+    echo -n "Knife config: ./.chef/knife.rb"
+  else
+    conf_dir=$( readlink ${HOME}/.chef|awk '{ln=split($0,a,"/")} END{print a[ln]}' )
+  fi
+  if [ -z $conf_dir ] ; then
+    echo -n ""
+  else
+    echo -n "Knife config: ${conf_dir}"
+  fi
+
+  unset conf_dir
+}
+
 prompt_command() {
   hname=$(hostname -s)
   uname=$(whoami)
   rver=$(rbenv_version)
   gbranch=$(git_branch)
+  cprompt=$(chef_prompt)
   pwd_git=$?
   #   Find the width of the prompt:
   TERMWIDTH=${COLUMNS}
 
-  temp="-- $(date) - $(ruby_prompt) - $(git_prompt) --- ${PWD} ---"
+  temp="-- $(date) - $(ruby_prompt) - $(git_prompt) - $(chef_prompt) -   ${PWD} ---"
 
   fillsize=$(expr ${TERMWIDTH} - ${#temp})
 
@@ -70,14 +86,15 @@ prompt_command() {
     dir="...${PWD:${cut}}"
   fi
 
-  unset fillsize cut temp TERMWIDTH pwd_git hname uname rver gbranch
+  unset fillsize cut temp TERMWIDTH pwd_git hname uname rver gbranch cprompt
 }
 
 PROMPT_COMMAND="prompt_command ; ${PROMPT_COMMAND}"
 
 PS1="\[${NC}\]-- \[${WHITE}\]\$(date)\[${NC}\] - "
 PS1="${PS1}\[${LIGHTRED}\]\$(ruby_prompt)\[${NC}\] - "
-PS1="${PS1}\[${YELLOW}\]\$(git_prompt)\[${NC}\] "
+PS1="${PS1}\[${YELLOW}\]\$(git_prompt)\[${NC}\] - "
+PS1="${PS1}\[${LIGHTPURPLE}\]\$(chef_prompt)\[${NC}\] "
 PS1="${PS1}---\${fill}- \[${LIGHTBLUE}\]\$dir \[${NC}\]--\n"
 PS1="${PS1}-- \[${LIGHTCYAN}\]\u\[${NC}\]@\[${BROWN}\]\h \[${NC}\] \$ "
 
