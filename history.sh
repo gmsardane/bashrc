@@ -13,5 +13,3 @@ _bash_history_sync() {
   builtin history -c          # Clear session history
   builtin history -r          # Reload session history
 }
-
-PROMPT_COMMAND="_bash_history_sync ; $PROMPT_COMMAND"

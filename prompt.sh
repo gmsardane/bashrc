@@ -20,17 +20,17 @@ WHITE="\033[1;37m"
 NC="\033[0m"
 
 git_prompt() {
-  if [ -z "$git_branch" ] ; then
-    branch=$(git_branch)
+  if [ -z "$branch" ] ; then
+    export branch=$(git_branch)
     stat=$?
     if [[ $stat -eq 0 ]] ; then
-      gbranch="Git Branch: ${branch}"
+      gprompt="Git Branch: ${branch}"
     else
-      gbranch=""
+      gprompt=""
     fi
   fi
 
-  echo -n $gbranch
+  echo -n $gprompt
 }
 
 ruby_prompt() {
@@ -59,26 +59,31 @@ chef_prompt() {
   echo -n $cprompt
 }
 
+_unset_vars() {
+  unset fillsize cut temp TERMWIDTH pwd_git hostname username
+  unset conf_dir cprompt
+  unset version rprompt
+  unset branch gprompt stat
+}
+
 prompt_command() {
-  if [ -z "$temp" ] ; then
-    hostname=$(hostname -s)
-    username=$(whoami)
-    pwd_git=$?
-    #   Find the width of the prompt:
-    TERMWIDTH=${COLUMNS}
-  
-    export temp="-- $(date) - $(ruby_prompt) - $(git_prompt) - $(chef_prompt) -   ${PWD} ---"
-  
-    fillsize=$(expr ${TERMWIDTH} - ${#temp})
-  
-    if [[ $fillsize -ge 0 ]] ; then
-      fill="-------------------------------------------------------------------------"
-      fill="${fill}------------------------------------------------------------------"
-      fill="${fill}------------------------------------------------------------------"
-      fill="${fill}------------------------------------------------------------------"
-      fill="${fill:0:${fillsize}}"
-      dir="${PWD}"
-    fi
+  hostname=$(hostname -s)
+  username=$(whoami)
+  pwd_git=$?
+  #   Find the width of the prompt:
+  TERMWIDTH=${COLUMNS}
+
+  export temp="-- $(date) - $(ruby_prompt) - $(git_prompt) - $(chef_prompt) -   ${PWD} ---"
+
+  fillsize=$(expr ${TERMWIDTH} - ${#temp})
+
+  if [[ $fillsize -ge 0 ]] ; then
+    fill="-------------------------------------------------------------------------"
+    fill="${fill}------------------------------------------------------------------"
+    fill="${fill}------------------------------------------------------------------"
+    fill="${fill}------------------------------------------------------------------"
+    fill="${fill:0:${fillsize}}"
+    dir="${PWD}"
   fi
 
   if [[ $fillsize -lt 0 ]] ; then
@@ -86,22 +91,18 @@ prompt_command() {
     let cut=3-${fillsize}
     dir="...${PWD:${cut}}"
   fi
+
+  prompt_line="${NC}-- ${WHITE}$(date)${NC} - ${LIGHTRED}$(ruby_prompt)${NC} - "
+  prompt_line="${prompt_line}${YELLOW}$(git_prompt)${NC} - ${LIGHTPURPLE}$(chef_prompt)${NC} "
+  prompt_line="${prompt_line}---${fill}- ${LIGHTBLUE}$dir ${NC}--\n"
+
+  echo -ne $prompt_line
+  PS1="-- \[${LIGHTCYAN}\]\u\[${NC}\]@\[${BROWN}\]\h \[${NC}\] \$ "
+
+  _unset_vars
+  _bash_history_sync
 }
 
-unset_vars() {
-  unset fillsize cut temp TERMWIDTH pwd_git hostname username
-  unset conf_dir cprompt
-  unset version rprompt
-  unset branch stat
-}
-
-PROMPT_COMMAND="prompt_command ; ${PROMPT_COMMAND}"
-
-PS1="\[${NC}\]-- \[${WHITE}\]\$(date)\[${NC}\] - "
-PS1="${PS1}\[${LIGHTRED}\]\$(ruby_prompt)\[${NC}\] - "
-PS1="${PS1}\[${YELLOW}\]\$(git_prompt)\[${NC}\] - "
-PS1="${PS1}\[${LIGHTPURPLE}\]\$(chef_prompt)\[${NC}\] "
-PS1="${PS1}---\${fill}- \[${LIGHTBLUE}\]\$dir \[${NC}\]--\n"
-PS1="${PS1}-- \[${LIGHTCYAN}\]\u\[${NC}\]@\[${BROWN}\]\h \[${NC}\] \$ \$(unset_vars)"
+PROMPT_COMMAND="prompt_command"
 
 export PS1
