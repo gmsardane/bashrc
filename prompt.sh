@@ -24,7 +24,7 @@ git_prompt() {
     export branch=$(git_branch)
     stat=$?
     if [[ $stat -eq 0 ]] ; then
-      gprompt="Git Branch: ${branch}"
+      gprompt="git: ${branch}"
     else
       gprompt=""
     fi
@@ -37,9 +37,9 @@ ruby_prompt() {
   if [ -z "$rprompt" ] ; then
     version=$(rbenv version)
     if [ "${version% (set*}" == "system" ] ; then
-      export rprompt="Ruby Version: System"
+      export rprompt="rbenv: System"
     else
-      export rprompt="Ruby Version: ${version% (set*}"
+      export rprompt="rbenv: ${version% (set*}"
     fi
   fi
 
@@ -49,10 +49,10 @@ ruby_prompt() {
 chef_prompt() {
   if [ -z "$cprompt" ] ; then
     if [[ -f ./.chef/knife.rb && $PWD != ${HOME} ]] ; then
-      export cprompt="Knife config: ./.chef/knife.rb"
+      export cprompt="knife: .chef/knife.rb"
     else
       conf_dir=$(readlink ${HOME}/.chef)
-      export cprompt="Knife config: ${conf_dir##*/}"
+      export cprompt="knife: ${conf_dir##*/}"
     fi
   fi
 
@@ -73,12 +73,13 @@ prompt_command() {
   #   Find the width of the prompt:
   TERMWIDTH=${COLUMNS}
 
-  export temp="-- $(date) - $(ruby_prompt) - $(git_prompt) - $(chef_prompt) -   ${PWD} ---"
+  export temp="-- $(ruby_prompt) - $(git_prompt) - $(chef_prompt) -   ${PWD} ---"
 
   fillsize=$(expr ${TERMWIDTH} - ${#temp})
 
   if [[ $fillsize -ge 0 ]] ; then
     fill="-------------------------------------------------------------------------"
+    fill="${fill}------------------------------------------------------------------"
     fill="${fill}------------------------------------------------------------------"
     fill="${fill}------------------------------------------------------------------"
     fill="${fill}------------------------------------------------------------------"
@@ -92,12 +93,11 @@ prompt_command() {
     dir="...${PWD:${cut}}"
   fi
 
-  prompt_line="${NC}-- ${WHITE}$(date)${NC} - ${LIGHTRED}$(ruby_prompt)${NC} - "
-  prompt_line="${prompt_line}${YELLOW}$(git_prompt)${NC} - ${LIGHTPURPLE}$(chef_prompt)${NC} "
+  prompt_line="-- ${LIGHTRED}$(ruby_prompt)${NC} - ${YELLOW}$(git_prompt)${NC} - ${LIGHTPURPLE}$(chef_prompt)${NC} "
   prompt_line="${prompt_line}---${fill}- ${LIGHTBLUE}$dir ${NC}--\n"
 
   echo -ne $prompt_line
-  PS1="-- \[${LIGHTCYAN}\]\u\[${NC}\]@\[${BROWN}\]\h \[${NC}\] \$ "
+  PS1="-- \[${WHITE}\]\d \t \[${NC}\]- \[${LIGHTCYAN}\]\u\[${NC}\]@\[${BROWN}\]\h \[${NC}\]\$ "
 
   _unset_vars
   _bash_history_sync
