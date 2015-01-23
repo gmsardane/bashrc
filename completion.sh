@@ -10,5 +10,3 @@ if [ -f "${config_path}" ]; then
 fi
 
 unset config_path stat
-
-source /usr/local/etc/bash_completion.d/git-completion.bash
